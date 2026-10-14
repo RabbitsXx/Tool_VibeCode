@@ -4,6 +4,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-10-14
+
 ### Added
 - **Update system.** `vibe update` (pull, re-install, show what changed; `--check` and `--dry-run` change nothing) and `/vibe-update` inside Claude Code. A SessionStart hook announces a newer version at most once per 24h (`VIBE_NO_UPDATE_CHECK=1` opts out). After an update the changelog entries since your old version are printed.
 - `vibe backups` and `vibe restore [name]` (a restore backs up what it replaces, so it can be undone).
