@@ -1,0 +1,17 @@
+{
+  "name": "tool-vibecode",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Essential, durable setup kit for vibe coding with Claude Code: global config, guard hooks, slash commands, subagents, project templates, prompts and MCP presets.",
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "bin": { "vibe": "bin/vibe.mjs" },
+  "scripts": {
+    "doctor": "node bin/vibe.mjs doctor",
+    "install-kit": "node bin/vibe.mjs install",
+    "status": "node bin/vibe.mjs status",
+    "verify": "node bin/vibe.mjs verify",
+    "test": "node --test"
+  }
+}

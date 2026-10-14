@@ -1,0 +1,16 @@
+{
+  "presets": [
+    {
+      "name": "context7",
+      "description": "Up-to-date library and framework documentation fetched on demand (stops the model guessing outdated APIs).",
+      "command": ["npx", "-y", "@upstash/context7-mcp"],
+      "usage": "Add 'use context7' to a prompt, or ask for the current docs of a library."
+    },
+    {
+      "name": "playwright",
+      "description": "Drive a real browser: open pages, click, fill forms, take screenshots. Lets the agent verify web UIs itself.",
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
+      "usage": "Ask: 'open http://localhost:3000 and check the signup flow at mobile width'. First run may download browsers."
+    }
+  ]
+}
