@@ -92,6 +92,16 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"{{HOOKS_DIR}}/update-check.mjs\"",
+            "timeout": 15
+          }
+        ]
       }
     ]
   }

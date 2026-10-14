@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
+import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { install, uninstall, status, manifestPath } from '../lib/installer.mjs';
 import { mergeSettings, unmergeSettings, renderFragment, hasVibeHooks } from '../lib/settings.mjs';
@@ -179,12 +180,31 @@ test('hook commands use forward slashes and the real hooks directory', () => {
   const dir = tmpDir();
   install({ dir });
   const cmds = Object.values(readJ(dir, 'settings.json').hooks).flat().flatMap((g) => g.hooks.map((h) => h.command));
-  assert.equal(cmds.length, 3);
+  assert.equal(cmds.length, 4);
   for (const c of cmds) {
     assert.ok(!c.includes('\\'), c);
     assert.ok(c.includes('/vibe/hooks/'), c);
     const file = c.match(/"(.+)"/)[1];
     assert.ok(fs.existsSync(file), `hook script exists: ${file}`);
+  }
+});
+
+test('registered hook commands really run from a config dir with spaces and Thai characters', () => {
+  const dir = path.join(tmpDir(), 'โฟลเดอร์ ทดสอบ cfg');
+  fs.mkdirSync(dir, { recursive: true });
+  install({ dir });
+  const settings = readJ(dir, 'settings.json');
+  const byEvent = (event, i = 0) => settings.hooks[event][i].hooks[0].command;
+  const run = (command, payload) => spawnSync(command, { shell: true, input: JSON.stringify(payload), encoding: 'utf8' });
+
+  const denied = run(byEvent('PreToolUse', 0), { tool_name: 'Bash', tool_input: { command: 'git push --force' } });
+  assert.equal(denied.status, 2, denied.stderr);
+  assert.match(denied.stderr, /vibe-guard/);
+  assert.equal(run(byEvent('PreToolUse', 0), { tool_name: 'Bash', tool_input: { command: 'ls' } }).status, 0);
+  assert.equal(run(byEvent('PreToolUse', 1), { tool_name: 'Write', tool_input: { file_path: '/p/.env', content: 'A=1' } }).status, 2);
+  for (const i of [0, 1]) {
+    const r = run(byEvent('SessionStart', i), { cwd: dir, source: 'startup' });
+    assert.equal(r.status, 0, r.stderr);
   }
 });
 

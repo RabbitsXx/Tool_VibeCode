@@ -1,6 +1,6 @@
 # Tool_VibeCode
 
-ชุดเครื่องมือ **จำเป็นทั้งหมดสำหรับ Vibe Coding** กับ Claude Code — ติดตั้งครั้งเดียว ใช้ได้ทุกโปรเจกต์ อัปเกรดได้โดยไม่ทับของที่คุณปรับแต่งไว้
+ชุดเครื่องมือ **จำเป็นทั้งหมดสำหรับ Vibe Coding** กับ Claude Code — ติดตั้งครั้งเดียว ใช้ได้ทุกโปรเจกต์ **อัปเดตได้ทุกครั้งด้วยคำสั่งเดียว** โดยไม่ทับของที่คุณปรับแต่งไว้
 
 > Vibe coding ที่ "ใช้ได้จริงในระยะยาว" ไม่ได้ขึ้นกับพรอมต์เทพ แต่ขึ้นกับ 4 อย่าง: **เครื่องมือครบ · กฎความปลอดภัยที่บังคับจริง · ขั้นตอนทำงานที่ซ้ำได้ · สถานะที่เซฟไว้ข้ามรอบ** ชุดนี้ทำให้ทั้ง 4 อย่างอยู่ในที่เดียว
 
@@ -41,20 +41,32 @@ claude
 ```
 แล้วพิมพ์ `/vibe-start อยากทำเว็บ ...` หรือ `/vibe-spec ...`
 
+## อัปเดต (ทำได้ทุกครั้งที่ต้องการ)
+
+| ต้องการ | คำสั่ง |
+|---|---|
+| ใน Claude Code | `/vibe-update` (หรือ `/vibe-update --check` แค่ดูว่ามีอะไรใหม่) |
+| ในเทอร์มินัล | `node bin/vibe.mjs update` |
+| แค่ดูว่ามีเวอร์ชันใหม่ไหม ไม่เปลี่ยนอะไร | `node bin/vibe.mjs update --check` |
+| ย้อนกลับ | `node bin/vibe.mjs restore` (คืนไฟล์จาก backup ล่าสุด) |
+
+`update` จะ `git pull --ff-only` แล้วติดตั้งซ้ำด้วยโค้ดใหม่ และ **แสดง changelog ของสิ่งที่เปลี่ยนตั้งแต่เวอร์ชันของคุณ** — ไฟล์ที่คุณแก้เองจะถูกข้าม (ไม่ทับ) กฎ/ไฟล์ที่เวอร์ชันใหม่เลิกใช้จะถูกถอนให้เอง
+ทุกครั้งที่เปิด Claude Code session ใหม่ ชุดนี้จะเช็กเวอร์ชันใหม่ให้ **ไม่เกินวันละครั้ง** (เงียบถ้าไม่มีอะไรใหม่หรือออฟไลน์; ปิดได้ด้วย `VIBE_NO_UPDATE_CHECK=1`)
+
 ## ในชุดนี้มีอะไร
 
 | ส่วน | ติดตั้งไปที่ | ทำอะไร |
 |---|---|---|
-| **15 slash commands** `/vibe-*` | `~/.claude/commands/` | ขั้นตอนมาตรฐาน: start → spec → plan → build → review → ship + fix, ui, test, sec, clean, explain, brief, handoff, resume |
-| **7 subagents** `vibe-*` | `~/.claude/agents/` | planner, reviewer, debugger, test-writer, security, ui-reviewer, researcher (อ่านงานหนัก ๆ แยก context ไม่ให้บทสนทนาหลักบวม) |
+| **16 slash commands** | `~/.claude/commands/` | `/vibe-start` `/vibe-spec` `/vibe-plan` `/vibe-build` `/vibe-fix` `/vibe-ui` `/vibe-review` `/vibe-test` `/vibe-sec` `/vibe-clean` `/vibe-explain` `/vibe-brief` `/vibe-ship` `/vibe-handoff` `/vibe-resume` `/vibe-update` |
+| **7 subagents** | `~/.claude/agents/` | `vibe-planner` `vibe-reviewer` `vibe-debugger` `vibe-test-writer` `vibe-security` `vibe-ui-reviewer` `vibe-researcher` (อ่านงานหนัก ๆ แยก context ไม่ให้บทสนทนาหลักบวม) |
 | **Skill** `vibe-workflow` | `~/.claude/skills/` | วงจรทำงาน + Definition of Done + anti-patterns |
-| **Guard hooks** (บังคับจริง) | `~/.claude/vibe/hooks/` | บล็อกคำสั่งอันตราย (`rm -rf /`, force-push, `curl \| sh`, DROP DATABASE…), บล็อกการเขียน `.env`/key/lockfile/`.git`, บล็อก secret ที่หลุดเข้าโค้ด, โหลดสถานะโปรเจกต์ตอนเปิด session |
-| **Permissions** | `~/.claude/settings.json` (merge) | อนุญาตคำสั่งปลอดภัยที่ใช้บ่อย (git status/diff, test, lint), ถามก่อนทำสิ่งย้อนกลับยาก (push, reset --hard), ปฏิเสธ force-push และการอ่าน `.env`/`~/.ssh` |
+| **Guard hooks** (บังคับจริง) | `~/.claude/vibe/hooks/` | **deny**: คำสั่งหายนะ (`rm -rf /`, force-push, format disk …), เขียน `.env`/key/lockfile/`.git`, secret หลุดเข้าโค้ด · **ask** (ถามคุณ ไม่ต้องรีสตาร์ท): `curl \| sh`, `--no-verify`, DROP/TRUNCATE, แก้ `.claude/settings.json` / `.mcp.json` / CI workflow · โหลดสถานะโปรเจกต์ · แจ้งเวอร์ชันใหม่ |
+| **Permissions** | `~/.claude/settings.json` (merge) | อนุญาตคำสั่งปลอดภัยที่ใช้บ่อย, ถามก่อนทำสิ่งย้อนกลับยาก (push, reset --hard), ปฏิเสธ force-push และการอ่าน `.env`/`~/.ssh` |
 | **กฎกลาง** | `~/.claude/CLAUDE.md` (บล็อกที่ชุดนี้ดูแล) | หลักการทำงาน ความปลอดภัย โครงเอกสารโปรเจกต์ |
 | **Project template** | `vibe new <dir>` | `AGENTS.md` + `CLAUDE.md`, `docs/{SPEC,PLAN,TASKS,DECISIONS,HANDOFF}.md`, `.gitignore`, `.env.example`, PR template, CI อัตโนมัติ (Node/Python) |
 | **คลังพรอมต์ภาษาไทย** | [`kit/prompts/`](kit/prompts/README.md) | พรอมต์ก๊อปวาง 9 แบบ (เริ่มแอป, แก้บั๊ก, UI, รีวิว, ออกจากลูป, เริ่ม session ใหม่ …) |
 | **MCP presets** | `vibe mcp` | context7 (docs ล่าสุดของไลบรารี), playwright (ให้ AI เปิดเบราว์เซอร์ตรวจ UI เอง) |
-| **Doctor** | `vibe doctor` | ตรวจเครื่องมือ เวอร์ชัน git identity, gh login, สถานะการติดตั้งของชุดนี้ |
+| **Doctor / Status / Backups** | `vibe doctor` `status` `backups` `restore` | ตรวจเครื่องมือ, สถานะการติดตั้ง, ย้อนกลับ |
 
 ## วงจรทำงานประจำวัน
 
@@ -69,39 +81,34 @@ claude
 
 ## ออกแบบให้ "ใช้ได้ยาว"
 
-- **ไม่ทับของคุณ**: `settings.json` ถูก *merge* (ไม่แตะ `model`, hooks หรือ rules เดิม), `CLAUDE.md` ใช้บล็อกที่มีเครื่องหมายกำกับ ส่วนอื่นเป็นของคุณ, ไฟล์ที่คุณแก้เองจะถูกข้ามตอนอัปเกรด (ใช้ `--force` ถ้าต้องการทับ — มี backup)
+- **ไม่ทับของคุณ**: `settings.json` ถูก *merge* (ไม่แตะ `model`, hooks หรือ rules เดิม), `CLAUDE.md` ใช้บล็อกที่มีเครื่องหมายกำกับ ส่วนอื่นเป็นของคุณ, ไฟล์ที่คุณแก้เองจะถูกข้ามตอนอัปเกรด (`--force` ถ้าต้องการทับ — มี backup)
 - **Idempotent**: รัน `install` กี่รอบก็ได้ผลเหมือนเดิม; `--dry-run` ดูก่อนเสมอ; backup ไว้ที่ `~/.claude/backups/vibe-*` (เก็บ 10 ชุดล่าสุด)
-- **ถอนได้สะอาด**: `vibe uninstall` คืน `settings.json` และ `CLAUDE.md` กลับเป็นของเดิมทุกไบต์ (มีเทสต์ยืนยัน)
+- **ถอนได้สะอาด**: `vibe uninstall` คืน `settings.json` และ `CLAUDE.md` เป็นของเดิมทุกไบต์ (มีเทสต์ยืนยัน)
+- **อัปเกรดไม่ทิ้งขยะ**: กฎ/ไฟล์ที่เวอร์ชันเก่าเคยเพิ่มแต่เวอร์ชันใหม่เลิกแล้ว จะถูกถอนให้ (เฉพาะที่ชุดนี้เป็นเจ้าของ)
+- **Guard ที่ไม่น่ารำคาญ**: เข้าใจโครงสร้างคำสั่งจริง (quote, `;` `&&` `|`, `$(...)`, `bash -c`, `powershell -EncodedCommand`) ข้อความที่แค่ *พูดถึง* คำสั่งอันตราย (commit message, echo, heredoc) ไม่ถูกบล็อก และวัดกับคำสั่งจริงจากการใช้งานจริง ไม่ใช่แค่ตัวอย่างในเทสต์
 - **Fail-open**: ถ้า hook พังเอง จะไม่ขวาง session ของคุณ (ปิด guard ชั่วคราวได้ด้วย `VIBE_GUARD_OFF=1` ก่อนเปิด `claude`)
-- **ไม่มี dependency**: Node built-ins ล้วน ไม่มี `npm install`, ไม่มีเวอร์ชันล็อกที่จะเน่า; hooks ไม่ import จากชุดนี้ จึงไม่พังถ้าคุณย้าย/ลบ clone
-- **มีเทสต์**: `npm test` (34 เทสต์: guards, installer, merge/unmerge, scaffold, CLI) และ `vibe verify` ตรวจความสอดคล้องของไฟล์ในชุด — รันใน CI ทุก push
-
-## อัปเดต / ถอนการติดตั้ง
-
-```bash
-node bin/vibe.mjs update            # git pull --ff-only แล้วติดตั้งซ้ำ
-node bin/vibe.mjs status            # ติดตั้งเวอร์ชันไหน มีไฟล์ถูกแก้ไหม
-node bin/vibe.mjs uninstall         # ถอนเฉพาะที่ชุดนี้ติดตั้ง
-```
+- **ไม่มี dependency**: Node built-ins ล้วน ไม่มี `npm install`; hooks เป็นไฟล์เดี่ยว ไม่ import จากชุดนี้ จึงไม่พังถ้าย้าย/ลบ clone
+- **มีเทสต์**: `npm test` ครอบคลุม guards, installer, merge/unmerge, ระบบอัปเดตแบบ end-to-end กับ git remote จำลอง, scaffold, CLI และ `vibe verify` ตรวจความสอดคล้องของไฟล์ในชุด
 
 ## เอกสารเพิ่มเติม
 
 - [docs/GUIDE.md](docs/GUIDE.md) — วิธี vibe code ด้วยชุดนี้ ตั้งแต่ไอเดียถึงปล่อยงาน
 - [docs/SAFETY.md](docs/SAFETY.md) — guard ป้องกันอะไร ไม่ป้องกันอะไร (พูดตรง ๆ)
-- [docs/CUSTOMIZE.md](docs/CUSTOMIZE.md) — เพิ่ม/แก้ command, agent, กฎ, permissions, MCP
+- [docs/CUSTOMIZE.md](docs/CUSTOMIZE.md) — เพิ่ม/แก้ command, agent, กฎ, permissions, MCP และวิธีออกเวอร์ชันใหม่
 - [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) — ปัญหาที่เจอบ่อยและวิธีแก้
 - [CHANGELOG.md](CHANGELOG.md)
 
 ## โครงสร้าง repo
 
 ```
-bin/vibe.mjs        CLI (doctor, install, update, status, uninstall, new, mcp, verify)
-lib/                โค้ดหลัก (installer, settings merge, doctor, scaffold ...)
+bin/vibe.mjs        CLI (doctor, install, update, status, uninstall, backups, restore, new, mcp, verify)
+lib/                โค้ดหลัก (installer, settings merge, update, changelog, doctor, scaffold ...)
 kit/claude/         สิ่งที่ติดตั้งเข้า ~/.claude (commands, agents, skills, hooks, CLAUDE.md, settings.fragment.json)
 kit/project-template/  โครงโปรเจกต์ใหม่
 kit/prompts/        คลังพรอมต์ภาษาไทย
 kit/mcp/            MCP presets
 setup/              bootstrap.ps1 / bootstrap.sh (ลงเครื่องมือที่ขาด)
+scripts/release.mjs ออกเวอร์ชันใหม่ (verify → test → bump → changelog → commit → tag)
 tests/              node --test
 ```
 
@@ -109,7 +116,8 @@ tests/              node --test
 
 - ออกแบบสำหรับ **Claude Code** เป็นหลัก; `AGENTS.md` ในโปรเจกต์ใช้ร่วมกับเอเจนต์อื่น (Codex, Copilot, Gemini) ได้ แต่ commands/hooks ใช้ได้เฉพาะ Claude Code
 - Guard hooks เป็น "ตาข่ายกันพลาด" ไม่ใช่ sandbox — อ่านขอบเขตจริงใน [docs/SAFETY.md](docs/SAFETY.md)
-- รูปแบบ settings/hooks อิงเอกสาร Claude Code ณ ตอนที่เขียน (ตุลาคม 2026) ถ้าอัปเดตแล้วมีอะไรเปลี่ยน ให้รัน `vibe doctor` และ `npm test` ก่อน
+- ระบบอัปเดตต้องการให้โฟลเดอร์ชุดนี้เป็น **git clone** (ไม่ใช่ zip) และเครื่องต้องเข้าถึง GitHub ได้
+- รูปแบบ settings/hooks อิงเอกสาร Claude Code ณ ตอนที่เขียน (ตุลาคม 2026) ถ้า Claude Code เปลี่ยนรูปแบบ ให้รัน `vibe doctor` และ `npm test`
 
 ## License
 

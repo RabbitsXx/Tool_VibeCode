@@ -18,6 +18,13 @@
 | ลง Node แล้วแต่ `node` ไม่เจอ | PATH ยังไม่รีเฟรชในหน้าต่างเดิม | เปิดเทอร์มินัลใหม่ |
 | `vibe mcp ... --apply` ล้มเหลว | `claude` ไม่อยู่ใน PATH, หรือมี server ชื่อเดียวกันแล้ว | `claude mcp list`; `claude mcp remove <name>` แล้วลองใหม่ |
 | `vibe update` บอก `git pull failed` | มีการแก้ไฟล์ใน clone ที่ชนกับ remote | `git status`; commit/stash แล้ว `git pull --ff-only` เอง |
+| `update` บอก `not a git clone` | โฟลเดอร์ชุดนี้มาจาก zip | `git clone https://github.com/RabbitsXx/Tool_VibeCode.git` แล้วรัน `node bin/vibe.mjs install` จากโฟลเดอร์ใหม่ |
+| `update` บอก `diverged` | คุณมี commit ในเครื่องที่ remote ไม่มี และ remote มี commit ใหม่ | `git pull --rebase` ในโฟลเดอร์ชุดนี้เอง (ระบบไม่แตะประวัติ git ให้) แล้ว `update` อีกครั้ง |
+| `update` บอก `no upstream` | branch ไม่ได้ผูกกับ remote | `git branch --set-upstream-to=origin/main main` |
+| `/vibe-update` บอกไม่พบ launcher | ยังไม่ได้ติดตั้ง หรือโฟลเดอร์ชุดนี้ถูกย้าย/ลบ | รัน `node bin/vibe.mjs install` จากโฟลเดอร์ชุดนี้ (`vibe status` จะบอกว่า kit folder หายไหม) |
+| ขึ้น "update available" ทั้งที่เพิ่งอัปเดต | cache ของการเช็ก (วันละครั้ง) เก่า | เปิด session ใหม่ หรือลบ `~/.claude/vibe/update-check.json` |
+| ไม่อยากให้เช็กอัปเดตเลย | — | ตั้งตัวแปร environment `VIBE_NO_UPDATE_CHECK=1` |
+| ไฟล์ที่ผมแก้ถูก "skip" ตอนอัปเดต | ตั้งใจ: ไม่ทับงานคุณ | ดูส่วนต่างกับเวอร์ชันใหม่ใน clone (`git diff`) แล้ว merge เอง หรือ `install --force` (มี backup) |
 | อยากย้อนกลับทุกอย่าง | — | `vibe uninstall` (คืน `settings.json`/`CLAUDE.md` เดิม) หรือกู้จาก `~/.claude/backups/vibe-<เวลา>/` |
 
 ## Hook ไม่เห็นผลที่คาด? ลองทีละชั้น

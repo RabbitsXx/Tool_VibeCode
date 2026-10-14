@@ -2,6 +2,27 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- **Update system.** `vibe update` (pull, re-install, show what changed; `--check` and `--dry-run` change nothing) and `/vibe-update` inside Claude Code. A SessionStart hook announces a newer version at most once per 24h (`VIBE_NO_UPDATE_CHECK=1` opts out). After an update the changelog entries since your old version are printed.
+- `vibe backups` and `vibe restore [name]` (a restore backs up what it replaces, so it can be undone).
+- `vibe doctor --updates` reports whether a newer kit version exists.
+- `scripts/release.mjs`: verify, test, bump, move `[Unreleased]` under the new version, commit, tag (pushes only with `--push`).
+- Installer records the kit folder and writes `~/.claude/vibe/launch.mjs`, so Claude Code can run the kit CLI from anywhere.
+- `vibe status` shows the kit folder and warns when it has moved.
+
+### Changed
+- **Guards rewritten around real command structure.** Quotes, `;` `&&` `||` `|`, `$(...)`, backticks, heredocs, `bash -c`, `powershell -Command/-EncodedCommand`, `cmd /c`, `eval` and `sudo/env/nohup/timeout` prefixes are understood, so text that only *mentions* a dangerous command (commit messages, `echo`, heredoc bodies) no longer triggers and quoting tricks no longer hide one (`git push "--force"`, `bash -c "rm -rf /"`).
+- **Two tiers.** `deny` for catastrophic actions (rm of root/home/drive, force-push, disk formatting, ...). `ask` for risky-but-sometimes-legitimate ones (pipe a download into a shell, `--no-verify`, DROP/TRUNCATE, edits to `.claude/settings*.json`, `.mcp.json`, CI workflows): you get a permission prompt instead of having to restart with `VIBE_GUARD_OFF=1`.
+- `guard-write` also protects credential files (`.netrc`, `~/.ssh`, `~/.aws`) and the kit's own files under `~/.claude/vibe/`.
+- Upgrades retire permission rules and files that a previous kit version added and the new version dropped.
+- `curl ... | node -e '...'` and similar (data piped into an inline script) are no longer treated as "running a download".
+
+### Fixed
+- `sudo -u root ...` / `sudo -E ...` / `env -i ...` option handling in the guard prefix stripping.
+- Verified against 627 real commands and 172 real file writes from past sessions: no false denies.
+
 ## [1.0.0] - 2026-10-14
 
 ### Added

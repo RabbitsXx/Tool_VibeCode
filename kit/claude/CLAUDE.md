@@ -21,7 +21,10 @@ Language: reply in the language the user writes in. Keep code, identifiers, comm
 - Keep `docs/TASKS.md` current as you work (`- [ ]` open, `- [x]` done). Before a session ends or context gets long, run `/vibe-handoff`.
 
 ### Slash commands from this kit
-`/vibe-start` new project - `/vibe-spec` idea to spec - `/vibe-plan` spec to tasks - `/vibe-build` implement next task - `/vibe-fix` bug - `/vibe-ui` UI polish - `/vibe-review` review diff - `/vibe-test` tests - `/vibe-sec` security pass - `/vibe-clean` simplify - `/vibe-explain` explain code - `/vibe-brief` turn a rough idea into a precise brief - `/vibe-ship` pre-release checks - `/vibe-handoff` save state - `/vibe-resume` continue.
+`/vibe-start` new project - `/vibe-spec` idea to spec - `/vibe-plan` spec to tasks - `/vibe-build` implement next task - `/vibe-fix` bug - `/vibe-ui` UI polish - `/vibe-review` review diff - `/vibe-test` tests - `/vibe-sec` security pass - `/vibe-clean` simplify - `/vibe-explain` explain code - `/vibe-brief` turn a rough idea into a precise brief - `/vibe-ship` pre-release checks - `/vibe-handoff` save state - `/vibe-resume` continue - `/vibe-update` update this kit.
+
+### Guards
+Hooks from this kit may refuse an action (message starts with `[vibe-guard]`) or ask the user to confirm it. Do not try to get around a refusal with another command, a script, or a different tool. Explain what was blocked and why, and offer the safe alternative; if the user really wants it, they run it themselves. Never edit anything under `~/.claude/vibe/`.
 
 ### Windows notes
 - Prefer forward slashes in paths inside commands and config. Quote paths with spaces.

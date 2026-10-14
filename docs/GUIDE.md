@@ -56,6 +56,18 @@ Claude จะถามไม่เกิน 3 ข้อ เลือก stack �
 - **ใช้ MCP แค่ที่จำเป็น** — `vibe mcp context7 --apply` (docs ล่าสุด) และ `playwright` (ให้ AI เปิดเว็บดูเอง) พอสำหรับเริ่ม; ทุก MCP เพิ่ม context และพื้นผิวความเสี่ยง
 - **Secret**: ใส่ใน `.env` (ถูก ignore) เอง อย่าแปะลงแชท guard จะกันไม่ให้ AI เขียนลงไฟล์โค้ด แต่ไม่รู้ว่าคุณพิมพ์ในแชทหรือเปล่า
 
+## ดูแลชุดเครื่องมือให้ทันสมัย
+
+| ต้องการ | ทำอะไร |
+|---|---|
+| รู้ว่ามีอะไรใหม่ | เปิด session ใหม่แล้ว Claude จะแจ้งถ้ามีเวอร์ชันใหม่ (เช็กวันละครั้ง) หรือ `/vibe-update --check` |
+| อัปเดต | `/vibe-update` ใน Claude Code หรือ `node bin/vibe.mjs update` ในเทอร์มินัล — แสดง changelog ของสิ่งที่เปลี่ยน แล้วเปิด Claude Code ใหม่ |
+| ตรวจสุขภาพ | `node bin/vibe.mjs doctor --updates` |
+| ผิดพลาด/อยากย้อน | `node bin/vibe.mjs backups` แล้ว `node bin/vibe.mjs restore <ชื่อ>` |
+| ย้ายโฟลเดอร์ Tool_VibeCode ไปที่อื่น | รัน `node bin/vibe.mjs install` จากที่ใหม่หนึ่งครั้ง (อัปเดต launcher ให้) |
+
+อัปเดตไม่ทับไฟล์ที่คุณแก้เอง (จะบอกว่าข้ามไฟล์ไหน) — อยากให้การปรับแต่งของคุณอยู่ถาวรและย้ายเครื่องได้ ให้แก้ใน `kit/` ของ clone ของคุณ (fork) แล้ว commit ดู [CUSTOMIZE.md](CUSTOMIZE.md)
+
 ## Definition of Done (ย่อ)
 
 รัน test/lint/build แล้วเห็นผลเอง · ลองใช้ฟีเจอร์จริง · มีเทสต์สำหรับตรรกะใหม่/บั๊กที่แก้ · ไม่มี debug/TODO/placeholder ค้าง · ไม่มี secret · diff ทุกบรรทัดจำเป็น · `docs/TASKS.md` ตรงความจริง
