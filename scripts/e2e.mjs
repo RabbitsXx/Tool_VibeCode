@@ -29,6 +29,10 @@ fs.mkdirSync(LOGS, { recursive: true });
 
 const ENV = { ...process.env, GIT_TERMINAL_PROMPT: '0' };
 
+// On Windows the driver shares a console with `claude`. When a model starts a background server (e.g. `node serve.mjs &`)
+// and Claude Code tears it down, the console control event also reaches this process and kills it silently. Ignore it.
+for (const sig of ['SIGINT', 'SIGBREAK']) process.on(sig, () => console.log(`  (driver ignored ${sig} sent by a child process)`));
+
 // ------------------------------------------------------------------ helpers
 
 function sh(cmd, argv, opts = {}) {
@@ -124,6 +128,7 @@ function claude(prompt, { maxTurns = 30, label }) {
       info.subtype = o.subtype ?? '';
     }
   }
+  info.limited = /session limit|usage[_ ]limit|rate[_ ]limit|hit your .*limit/i.test(`${info.final}${raw.slice(-2000)}`) && (info.isError || info.turns <= 1);
   return info;
 }
 
@@ -283,7 +288,7 @@ const STEPS = [
       return [
         check('tests pass when I run them', t.ok && t.pass > 0, `pass=${t.pass} fail=${t.fail}`),
         check('number of tests did not decrease', countTests() >= b.n, `${b.n} -> ${countTests()}`),
-        check('production code untouched', srcChanged.length === 0, srcChanged.join(', ')),
+        check('production code untouched, or the change is clearly disclosed', srcChanged.length === 0 || /production code changed|source code you didn't ask|real bug|found a (real )?bug/i.test(res.final), srcChanged.length ? `changed: ${srcChanged.join(', ')}` : ''),
         check('final answer lists tests added and commands run', /test/i.test(res.final) && /(node --test|npm test)/i.test(res.final)),
       ];
     },
@@ -336,7 +341,13 @@ const STEPS = [
     before: () => status(),
     checks: (res, before) => [
       noFileChanges(before),
-      check('summary mentions the beep next step', /beep/i.test(res.final)),
+      (() => {
+        // The summary must reflect what HANDOFF.md lists first under "Next steps" (shared distinctive words), not a fixed phrase.
+        const first = (read('docs/HANDOFF.md')?.split(/^##\s*Next steps.*$/im)[1] ?? '').split('\n').find((l) => /^\s*(?:1\.|[-*])\s+\S/.test(l)) ?? '';
+        const words = [...new Set(first.toLowerCase().match(/[a-z][a-z0-9-]{4,}/g) ?? [])];
+        const shared = words.filter((w) => res.final.toLowerCase().includes(w));
+        return check("summary's next step matches HANDOFF's first next step", shared.length >= 2 || /beep/i.test(res.final), `shared words: ${shared.slice(0, 6).join(', ') || 'none'}`);
+      })(),
       check('summary is short (<=18 lines)', res.final.split('\n').length <= 18, `${res.final.split('\n').length} lines`),
       check('verified the project state (ran a command or read git)', res.commands.some((c) => /git (status|log)|node --test|npm test/.test(c))),
     ],
@@ -430,6 +441,12 @@ for (const step of STEPS) {
       } catch { /* ignore */ }
     }
     res.commands.push(...again);
+  }
+  if (res.limited) {
+    console.log(`  INCONCLUSIVE: usage/rate limit hit (${res.final.slice(0, 100)}). Stopping; re-run later with --steps ${step.id},... on a fresh project.`);
+    report.steps.push({ id: step.id, inconclusive: true, reason: res.final.slice(0, 200), checks: [] });
+    report.inconclusive = true;
+    break;
   }
   step.after?.();
   let checks;

@@ -4,6 +4,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 
 ## [Unreleased]
 
+### Added
+- `scripts/e2e.mjs`: end-to-end test with a real Claude Code and a real model. It builds a small project with the 13 workflow commands (start, plan, build, fix, ui, review, sec, test, explain, brief, handoff, resume, ship), seeds a real bug for `/vibe-fix`, and checks every step from files, tests and git instead of the model's own claims. Costs real usage; not part of `npm test`. Results and method: `docs/E2E.md`.
+
+### Changed
+- `/vibe-start` now scaffolds from the kit template (`node ~/.claude/vibe/launch.mjs new . --git`) instead of improvising a structure, requires an `## Assumptions` section in `docs/SPEC.md`, writes tasks as `- [ ] ... - done when ...`, and must fill the `AGENTS.md` placeholders. Found by the E2E run: two of three models had left assumptions out of the spec.
+- `/vibe-test` has an explicit rule for production code: untouched by default; only a minimal fix for a real bug a new test exposes, kept as the regression test and disclosed up front in the answer. Found by the E2E run: a model fixed a real `reset()` bug and the command had no policy for that.
+
 ## [2.0.0] - 2026-10-14
 
 ### Added

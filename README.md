@@ -89,11 +89,13 @@ claude
 - **Fail-open**: ถ้า hook พังเอง จะไม่ขวาง session ของคุณ (ปิด guard ชั่วคราวได้ด้วย `VIBE_GUARD_OFF=1` ก่อนเปิด `claude`)
 - **ไม่มี dependency**: Node built-ins ล้วน ไม่มี `npm install`; hooks เป็นไฟล์เดี่ยว ไม่ import จากชุดนี้ จึงไม่พังถ้าย้าย/ลบ clone
 - **มีเทสต์**: `npm test` ครอบคลุม guards, installer, merge/unmerge, ระบบอัปเดตแบบ end-to-end กับ git remote จำลอง, scaffold, CLI และ `vibe verify` ตรวจความสอดคล้องของไฟล์ในชุด
+- **ทดสอบกับโมเดลจริง**: `scripts/e2e.mjs` สร้างโปรเจกต์จริงด้วย `/vibe-*` ครบวงจร 13 ขั้นแล้วตรวจจากไฟล์/เทสต์/git — ผ่าน 71/71 ทั้ง Sonnet, Opus และ Haiku (หนึ่งโปรเจกต์ หนึ่งรอบต่อโมเดล บน Windows; ดู [docs/E2E.md](docs/E2E.md))
 
 ## เอกสารเพิ่มเติม
 
 - [docs/GUIDE.md](docs/GUIDE.md) — วิธี vibe code ด้วยชุดนี้ ตั้งแต่ไอเดียถึงปล่อยงาน
 - [docs/SAFETY.md](docs/SAFETY.md) — guard ป้องกันอะไร ไม่ป้องกันอะไร (พูดตรง ๆ)
+- [docs/E2E.md](docs/E2E.md) — ผลทดสอบ End-to-End กับ Claude Code และโมเดลจริง (Sonnet/Opus/Haiku) วิธีรัน และข้อจำกัด
 - [docs/CUSTOMIZE.md](docs/CUSTOMIZE.md) — เพิ่ม/แก้ command, agent, กฎ, permissions, MCP และวิธีออกเวอร์ชันใหม่
 - [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) — ปัญหาที่เจอบ่อยและวิธีแก้
 - [CHANGELOG.md](CHANGELOG.md)
@@ -109,6 +111,7 @@ kit/prompts/        คลังพรอมต์ภาษาไทย
 kit/mcp/            MCP presets
 setup/              bootstrap.ps1 / bootstrap.sh (ลงเครื่องมือที่ขาด)
 scripts/release.mjs ออกเวอร์ชันใหม่ (verify → test → bump → changelog → commit → tag)
+scripts/e2e.mjs     ทดสอบ End-to-End กับโมเดลจริง (ใช้โควตา รันเอง ไม่อยู่ใน npm test)
 tests/              node --test
 ```
 

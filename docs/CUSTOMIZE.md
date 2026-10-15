@@ -66,7 +66,7 @@ model: inherit
 เวิร์กโฟลว์ที่ทำให้ทุกการอัปเดตตรวจสอบได้และผู้ใช้เห็น changelog:
 
 1. แก้ใน `kit/`, `lib/` ฯลฯ แล้ว **เขียนสิ่งที่เปลี่ยนไว้ใต้ `## [Unreleased]` ใน `CHANGELOG.md`** (Added / Changed / Fixed — เขียนให้ผู้ใช้อ่านรู้เรื่อง)
-2. commit งานตามปกติ (working tree ต้องสะอาด และอยู่บน `main`)
+2. commit งานตามปกติ (working tree ต้องสะอาด และอยู่บน `main`) ถ้าแก้พรอมต์ของ `/vibe-*` ให้รัน `node scripts/e2e.mjs --model sonnet` (ทีละโมเดล) ก่อน — ดู [E2E.md](E2E.md)
 3. `node scripts/release.mjs patch|minor|major` — จะรัน `verify` และ `node --test`, แก้เลขใน `package.json`, ย้ายเนื้อหา `[Unreleased]` ไปใต้เวอร์ชันใหม่พร้อมวันที่, commit `release: vX.Y.Z` และ tag `vX.Y.Z` (ยังไม่ push; ใส่ `--dry-run` เพื่อดูก่อน)
 4. ตรวจด้วย `git show` แล้ว `git push origin main --follow-tags` (หรือใช้ `--push` ตั้งแต่ขั้นที่ 3)
 

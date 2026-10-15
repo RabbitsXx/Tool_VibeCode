@@ -10,4 +10,5 @@ Testing target: $ARGUMENTS
 3. Write focused tests that assert behavior, not implementation details. Prefer real objects over mocks; mock only at process boundaries (network, clock, filesystem when needed). Each test should fail for exactly one reason. For a large area, delegate drafting to the `vibe-test-writer` subagent.
 4. Run the new tests, then the full suite. Make sure a new test actually fails when the behavior is broken (temporarily break the code or reason through it explicitly).
 5. Never delete or loosen an existing test just to pass. If a test is wrong, explain why and fix it deliberately.
+5b. Production code is off limits by default. Only when a new test exposes a real bug may you make the smallest possible fix; keep that test as the regression test, and open your final answer with a clearly labelled "Production code changed" note (file, what, why). Never change production code to make a test easier to write.
 6. Report: tests added, commands run, results, and coverage gaps you left.
