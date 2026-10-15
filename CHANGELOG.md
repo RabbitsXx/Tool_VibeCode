@@ -4,6 +4,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-10-15
+
 ### Added
 - `scripts/e2e.mjs`: end-to-end test with a real Claude Code and a real model. It builds a small project with the 13 workflow commands (start, plan, build, fix, ui, review, sec, test, explain, brief, handoff, resume, ship), seeds a real bug for `/vibe-fix`, and checks every step from files, tests and git instead of the model's own claims. Costs real usage; not part of `npm test`. Results and method: `docs/E2E.md`.
 
