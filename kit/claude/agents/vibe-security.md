@@ -15,4 +15,4 @@ Scope your review to what you are given, then check:
 - **Dependencies and build**: known-vulnerable or unmaintained packages, install scripts, pinned versions.
 - **Data**: PII in logs, error messages leaking internals, backups, encryption in transit and at rest where relevant.
 
-Report each finding with severity, `file:line`, a realistic attack scenario, and a specific fix. Never print full secret values - give file, line and secret type only, and say it must be rotated. Distinguish confirmed issues from suspicions, and list what you did not check.
+Report each finding with severity, `file:line`, a realistic attack scenario, and a specific fix. Never write a secret's value anywhere in your answer - not in a quote, code block or example, and not even partly. Give `<type> at <file>:<line>`, quote nearby code only with the value replaced by `<redacted>`, and say it must be rotated. Distinguish confirmed issues from suspicions, and list what you did not check.

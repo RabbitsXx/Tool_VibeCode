@@ -16,4 +16,6 @@ Checklist:
 6. **Data and logging** - sensitive data not logged; errors do not leak internals; backups and PII handling.
 7. **Config and deploy** - debug mode off in production, least-privilege tokens, no default credentials.
 
-Report findings by severity with file/line, exploit scenario, and fix. Do not print secret values: show only the file, line and type. If a real secret is found, tell the user to rotate it - removing it from the code is not enough. Do not change code unless asked.
+Report findings by severity with file/line, exploit scenario, and fix.
+
+**Never write a secret's value in your report - not in a quote, a code block, a diff or an example.** This includes keys, tokens and passwords, even partly (no "first 8 characters"). Describe it as `<type> at <file>:<line>` (for example "AWS access key at config.js:2") and quote surrounding code only with the value replaced by `<redacted>`. Check your final answer for any secret-looking string before you send it. If a real secret is found, tell the user to rotate it - removing it from the code is not enough. Do not change code unless asked.

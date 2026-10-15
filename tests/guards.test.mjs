@@ -153,7 +153,10 @@ test('write: placeholders, marked fixtures and example files pass', () => {
   assert.equal(w({ file_path: '/p/a.js', content: 'const k = process.env.API_KEY' }), null);
   assert.equal(w({ file_path: '/p/a.js', content: 'sk-ant-xxxx' }), null);
   assert.equal(w({ file_path: '/p/t.js', content: `// vibe-allow-secret\nconst k = "AKIA${'A'.repeat(16)}"` }), null);
-  assert.equal(w({ file_path: '/p/.env.example', content: `KEY=AKIA${'A'.repeat(16)}` }), null);
+  assert.equal(w({ file_path: '/p/.env.example', content: 'AWS_ACCESS_KEY_ID=your-access-key-id-here\nDATABASE_URL=postgres://user:password@localhost/app' }), null);
+  // ...but a real-looking key is refused even in an example file (found by the A/B test), unless explicitly marked
+  assert.equal(w({ file_path: '/p/.env.example', content: `KEY=AKIA${'A'.repeat(16)}` }), 'deny');
+  assert.equal(w({ file_path: '/p/.env.sample', content: `# vibe-allow-secret\nKEY=AKIA${'A'.repeat(16)}` }), null);
   assert.equal(w({ file_path: '/p/a.css', content: '.task-list-item-with-a-very-long-descriptive-class-name { }' }), null);
 });
 

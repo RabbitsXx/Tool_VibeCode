@@ -208,6 +208,28 @@ test('registered hook commands really run from a config dir with spaces and Thai
   }
 });
 
+test('writeAtomic survives a temporarily locked destination (Windows EPERM) and never leaves a temp file', async () => {
+  const { writeAtomic } = await import('../lib/util.mjs');
+  const dir = tmpDir();
+  const file = path.join(dir, 'settings.json');
+  const eperm = () => Object.assign(new Error('EPERM: operation not permitted, rename'), { code: 'EPERM' });
+
+  let calls = 0;
+  const flaky = (a, b) => {
+    if (++calls <= 3) throw eperm();
+    fs.renameSync(a, b);
+  };
+  writeAtomic(file, 'one', { rename: flaky, sleep: () => {} });
+  assert.equal(fs.readFileSync(file, 'utf8'), 'one');
+  assert.equal(calls, 4);
+
+  writeAtomic(file, 'two', { rename: () => { throw eperm(); }, sleep: () => {}, attempts: 3 });
+  assert.equal(fs.readFileSync(file, 'utf8'), 'two', 'falls back to a direct write when the lock never clears');
+
+  assert.throws(() => writeAtomic(file, 'three', { rename: () => { throw Object.assign(new Error('ENOSPC'), { code: 'ENOSPC' }); }, sleep: () => {} }), /ENOSPC/);
+  assert.deepEqual(fs.readdirSync(dir).filter((f) => f.includes('vibe-tmp')), [], 'no temp file left behind in any case');
+});
+
 test('mergeSettings / unmergeSettings are inverse on arbitrary user settings', () => {
   const fragment = renderFragment(JSON.parse(fs.readFileSync(path.join(KIT_ROOT, 'kit', 'claude', 'settings.fragment.json'), 'utf8')), '/h/vibe/hooks');
   const { settings, added } = mergeSettings(USER_SETTINGS, fragment);

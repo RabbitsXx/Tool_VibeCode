@@ -16,6 +16,9 @@ New project from template. Nothing implemented.
 1. Fill in `docs/SPEC.md` (`/vibe-spec`).
 2. Plan the tasks (`/vibe-plan`).
 
+## Decisions in force
+Choices and constraints the user stated that must keep being honored (one line each).
+
 ## Gotchas
 
 ## How to run

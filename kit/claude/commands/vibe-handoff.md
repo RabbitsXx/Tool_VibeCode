@@ -18,10 +18,14 @@ Base it on facts from this session and the repository (`git status`, `git log -5
 <exact point where work stopped, file names, what remains>
 ## Next steps
 1. ... (ordered, concrete)
+## Decisions in force
+<every decision or constraint the user stated that must keep being honored, one line each, with the reason if given - e.g. "no npm packages", "case-insensitive", "key name freq">
 ## Gotchas
-<traps, flaky tests, env quirks, decisions the user made and why>
+<traps, flaky tests, env quirks>
 ## How to run
 <commands to install, run, test>
 ```
+
+The "Decisions in force" section is the most important one: scan this whole conversation for choices, constraints and preferences the user stated (even in passing) and list all of them. A future session that does not know them will break them.
 
 Also update `docs/TASKS.md` so checkboxes match reality. Do not include secrets. Finish by telling the user to start a fresh session and run `/vibe-resume`.

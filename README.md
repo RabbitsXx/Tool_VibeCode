@@ -95,6 +95,7 @@ claude
 
 - [docs/GUIDE.md](docs/GUIDE.md) — วิธี vibe code ด้วยชุดนี้ ตั้งแต่ไอเดียถึงปล่อยงาน
 - [docs/SAFETY.md](docs/SAFETY.md) — guard ป้องกันอะไร ไม่ป้องกันอะไร (พูดตรง ๆ)
+- [docs/AB.md](docs/AB.md) — **ผลทดลอง A/B: ใช้ชุดนี้ เทียบกับไม่ใช้** (152 รัน ความปลอดภัย/ความฝืด/ขั้นตอน/แก้บั๊ก/รีวิว/ต่อเนื่อง/UI/ต้นทุน) พร้อมข้อเสียและข้อจำกัดตามจริง
 - [docs/E2E.md](docs/E2E.md) — ผลทดสอบ End-to-End กับ Claude Code และโมเดลจริง (Sonnet/Opus/Haiku) วิธีรัน และข้อจำกัด
 - [docs/CUSTOMIZE.md](docs/CUSTOMIZE.md) — เพิ่ม/แก้ command, agent, กฎ, permissions, MCP และวิธีออกเวอร์ชันใหม่
 - [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) — ปัญหาที่เจอบ่อยและวิธีแก้

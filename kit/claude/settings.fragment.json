@@ -49,6 +49,8 @@
     "deny": [
       "Bash(git push --force *)",
       "Bash(git push -f *)",
+      "PowerShell(git push --force *)",
+      "PowerShell(git push -f *)",
       "Read(./.env)",
       "Read(./.env.local)",
       "Read(./.env.production)",

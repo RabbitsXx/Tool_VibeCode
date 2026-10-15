@@ -69,7 +69,9 @@ export function evaluate(toolInput) {
     }
   }
   const text = contentsOf(toolInput);
-  if (text && !text.includes(ALLOW_MARKER) && !ENV_SAFE.test(file)) {
+  // Example files are NOT exempt: a real key pasted into .env.example gets committed, which is exactly the leak
+  // we want to stop (found by the A/B test). Deliberate fixtures use the marker comment.
+  if (text && !text.includes(ALLOW_MARKER)) {
     for (const [name, re] of SECRET_PATTERNS) {
       if (re.test(text)) {
         return hit('deny', `Content looks like it contains a real secret (${name}). Read it from an environment variable instead, and put a placeholder in .env.example. If this is a deliberate fixture, add the comment "${ALLOW_MARKER}".`);

@@ -4,6 +4,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 
 ## [Unreleased]
 
+### Added
+- **A/B experiment** (`scripts/ab.mjs`, `scripts/ab-report.mjs`, `scripts/ab-index.mjs`, `lib/claude-run.mjs`, `lib/shots.mjs`): the same short tasks with and without the kit, real Claude Code, real model, outcomes read from files/git/tests. Covers safety, friction, workflow, bug fixing, review, security audit, session continuity, UI and overhead. Results, trade-offs and limits: `docs/AB.md`.
+
+### Changed
+- `/vibe-handoff` has a dedicated "Decisions in force" section (and the project template too); `/vibe-resume` repeats those decisions. Found by the A/B test: a model lost two user decisions across sessions.
+- `/vibe-sec` and the `vibe-security` agent must never write a secret's value (not even partly); measured: the real key appeared in 2 of 6 reports before, 0 of 4 after.
+- `guard-write` now scans example files (`.env.example` etc.) for real-looking secrets; they were exempt, which let a real key be written into a tracked file.
+
+### Fixed
+- The installer no longer fails or leaves a temp file when Windows reports `EPERM`/`EBUSY` because another process has `settings.json` open: it retries, then falls back to a direct write.
+- **The kit removed the PowerShell tool from Claude Code.** Any `Bash(...)` deny rule makes Claude Code drop the PowerShell tool altogether, and the kit shipped two (`git push --force` / `-f`). Found by the A/B test (the tool was missing in 33 of 33 runs with the kit, present in 33 of 33 without; bisected to the deny rules). Added the `PowerShell(...)` twins; `vibe verify` now fails if a Bash deny rule has no PowerShell twin.
+
 ## [2.1.0] - 2026-10-15
 
 ### Added
