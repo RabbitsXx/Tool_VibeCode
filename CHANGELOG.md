@@ -4,6 +4,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-10-15
+
 ### Added
 - **A/B experiment** (`scripts/ab.mjs`, `scripts/ab-report.mjs`, `scripts/ab-index.mjs`, `lib/claude-run.mjs`, `lib/shots.mjs`): the same short tasks with and without the kit, real Claude Code, real model, outcomes read from files/git/tests. Covers safety, friction, workflow, bug fixing, review, security audit, session continuity, UI and overhead. Results, trade-offs and limits: `docs/AB.md`.
 
